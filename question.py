@@ -107,7 +107,7 @@ This assignment tests your understanding of:
 # TODO: Implement the login and registration portal system based on the requirements above
 
 verification_amount = 1500
-users_db = [{"username":"temitope","password":4444,"balance":4000.0,"is_verified":True}]            # Initialize user database with appropraite data-type
+users_db = [{"username":"temitope","password":4444,"balance":4000.0,"is_verified":True},{"username":"bankat","password":4444,"balance":4000.0,"is_verified":True}]            # Initialize user database with appropraite data-type
 
 
 command = input( """
@@ -131,16 +131,16 @@ if command == "register" or command == "login":
 		balance = float(input("Enter Deposit: "))
 		is_verified = False
 		new_user = {"username":user_name,"password":pin,"balance":balance,"is_verified":False}
-		if new_user["username"] != users_db[0]["username"]:
+		if not any(d["username"] == new_user["username"] for d in users_db):
 			print("User Registered Successfully!")
 			users_db.append(new_user)
 			print(users_db)
 			verify = input(f"Verify your account? yes or no?:\nVerification fee: {verification_amount}: ").lower()
-			if verify == "yes" and users_db[-1]["balance"] >= verification_amount:
+			if verify == "yes" and new_user["balance"] >= verification_amount:
 				cost = users_db[-1]["balance"] - verification_amount
 				is_verified = True
-				users_db[-1]["is_verified"] = is_verified
-				users_db[-1]["balance"] = cost
+				new_user["is_verified"] = is_verified
+				new_user["balance"] = cost
 				print("Verification Updated Sucessfully!")
 				print("Login Successful")
 				print(users_db)
@@ -158,10 +158,10 @@ if command == "register" or command == "login":
 		user_name = input("Enter Username: ").lower()
 		pin = int(input("Enter Password: "))
 		registered_user = {"username":user_name,"password":pin}
-		if registered_user["username"] == users_db[-1]["username"] and registered_user["password"] == users_db[-1]["password"]:
+		if any(d["username"] == registered_user["username"] and d["password"] == registered_user["password"] for d in users_db):
 			print("Login Successful")
 			print(users_db)
-		elif registered_user["username"] == users_db[-1]["username"] and registered_user["password"] != users_db[-1]["password"]:
+		elif any(d["username"] == registered_user["username"] and d["password"] != registered_user["password"] for d in users_db):
 			print(f"Password mismatch for {user_name}")
 		else:
 			print(f"User {user_name} does not exist!")
