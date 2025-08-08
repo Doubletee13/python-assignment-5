@@ -104,10 +104,17 @@ This assignment tests your understanding of:
 - Program organization and user experience design
 """
 
+
+
 # TODO: Implement the login and registration portal system based on the requirements above
 
 verification_amount = 1500
-users_db = [{"username":"temitope","password":4444,"balance":4000.0,"is_verified":True},{"username":"bankat","password":4444,"balance":4000.0,"is_verified":True}]            # Initialize user database with appropraite data-type
+users_db = {"temitope":{"password":4444,"balance":4000.0,"is_verified":True},
+	    "bankat":{"password":4444,"balance":4000.0,"is_verified":True}
+	    }           								
+
+	    # Initialize user database with appropraite data-type
+
 
 
 command = input( """
@@ -126,21 +133,21 @@ command = input( """
 
 if command == "register" or command == "login":
 	if command == "register":
-		user_name = input("Create Username: ").lower()
-		pin = int(input("Create Password: "))
-		balance = float(input("Enter Deposit: "))
-		is_verified = False
-		new_user = {"username":user_name,"password":pin,"balance":balance,"is_verified":False}
-		if not any(d["username"] == new_user["username"] for d in users_db):
+		user_name = input("Create Username: ").lower().strip()
+		if user_name not in users_db:
+			pin = int(input("Create Password: "))
+			balance = float(input("Enter Deposit: "))
+			is_verified = False
+			new_user = {user_name:{"password":pin,"balance":balance,"is_verified":False}}
 			print("User Registered Successfully!")
-			users_db.append(new_user)
+			users_db.update(new_user)
 			print(users_db)
 			verify = input(f"Verify your account? yes or no?:\nVerification fee: {verification_amount}: ").lower()
-			if verify == "yes" and new_user["balance"] >= verification_amount:
-				cost = users_db[-1]["balance"] - verification_amount
+			if verify == "yes" and new_user[user_name]["balance"] >= verification_amount:
+				cost = users_db[user_name]["balance"] - verification_amount
 				is_verified = True
-				new_user["is_verified"] = is_verified
-				new_user["balance"] = cost
+				users_db[user_name]["is_verified"] = is_verified
+				users_db[user_name]["balance"] = cost
 				print("Verification Updated Sucessfully!")
 				print("Login Successful")
 				print(users_db)
@@ -148,7 +155,7 @@ if command == "register" or command == "login":
 				print("Login Sucessful!")
 				print(users_db)
 			else:
-				print("Insufficient Funds:", users_db[-1]["balance"])
+				print("Insufficient Funds:", users_db[user_name]["balance"])
 				print(f"Verification fee is: {verification_amount}")
 				print("Login Successful!")
 				print(users_db)
@@ -158,13 +165,67 @@ if command == "register" or command == "login":
 		user_name = input("Enter Username: ").lower()
 		pin = int(input("Enter Password: "))
 		registered_user = {"username":user_name,"password":pin}
-		if any(d["username"] == registered_user["username"] and d["password"] == registered_user["password"] for d in users_db):
+		if user_name in users_db and pin == users_db[user_name]["password"]:
 			print("Login Successful")
 			print(users_db)
-		elif any(d["username"] == registered_user["username"] and d["password"] != registered_user["password"] for d in users_db):
+		elif user_name in users_db != users_db[user_name]["password"]:
 			print(f"Password mismatch for {user_name}")
 		else:
 			print(f"User {user_name} does not exist!")
 else:
 	print("Invalid Command")
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
